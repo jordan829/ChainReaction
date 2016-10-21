@@ -4,32 +4,45 @@ using System.Collections;
 public class GrabBehavior : MonoBehaviour {
 
     private SteamVR_TrackedObject trackedObj;
-    private SteamVR_Controller.Device device;
+    private PhysicsController physController;
     private GameObject savedGO;
     private Transform prevParent;
 
     void Awake()
     {
         // Get reference to controller
-        trackedObj = transform.parent.GetComponent<SteamVR_TrackedObject>();
-        device = SteamVR_Controller.Input((int)trackedObj.index);
+        trackedObj = GetComponent<SteamVR_TrackedObject>();
+
+        // Get reference to physics controller
+        physController = GameObject.FindObjectOfType<PhysicsController>();
     }
 
     void OnTriggerStay(Collider other)
     {
-        // Grab object
-        if (other.gameObject.tag == "movable" && device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
-        {
-            prevParent = other.transform.parent;
-            savedGO = other.gameObject;
-            savedGO.transform.SetParent(transform);
-        }
+        var Controller = SteamVR_Controller.Input((int)trackedObj.index);
 
-        // Release object
-        else if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger) && savedGO != null)
+        // Make sure physics are not already initiated (player cannot move objects while paused in the middle of a simulation)
+        if (physController.paused && !physController.started)
         {
-            savedGO.transform.SetParent(prevParent);
-            savedGO = null;
+            // Grab object
+            if (other.gameObject.tag == "movable" && Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
+            {
+                prevParent = other.transform.parent;
+                savedGO = other.gameObject;
+                savedGO.GetComponent<Rigidbody>().useGravity = false;
+                savedGO.transform.SetParent(transform);
+            }
+
+            // Release object
+            else if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Trigger) && savedGO != null)
+            {
+                if (savedGO != null)
+                {
+                    savedGO.GetComponent<Rigidbody>().useGravity = true;
+                    savedGO.transform.SetParent(prevParent);
+                    savedGO = null;
+                }
+            }
         }
     }
 }
