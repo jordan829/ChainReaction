@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour{
 
-    private PhysicsController physController;
+    public static GameManager instance;
+    public static PhysicsManager physManager;
 
-    void Start () {
+    void Awake()
+    {
+        if (instance != null)
+            Destroy(gameObject);
 
+        else
+            instance = this;
+
+        physManager = GetComponent<PhysicsManager>();
     }
 }

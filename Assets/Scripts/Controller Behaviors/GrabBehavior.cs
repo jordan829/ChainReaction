@@ -22,7 +22,7 @@ public class GrabBehavior : MonoBehaviour {
         var Controller = SteamVR_Controller.Input((int)trackedObj.index);
 
         // Make sure physics are not already initiated (player cannot move objects while paused in the middle of a simulation)
-        if (physController.paused && !physController.started)
+        if (GameManager.physManager.paused && !GameManager.physManager.paused)
         {
             // Grab object
             if (other.gameObject.tag == "movable" && Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
