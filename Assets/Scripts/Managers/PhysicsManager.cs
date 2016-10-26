@@ -10,8 +10,6 @@ public class PhysicsManager : MonoBehaviour {
     private List<GameObject> Props = new List<GameObject>();
     private List<Vector3> Positions = new List<Vector3>();
     private List<Quaternion> Rotations = new List<Quaternion>();
-    public bool paused = true;
-    public bool started = false;
 
     void Start()
     {
@@ -29,15 +27,15 @@ public class PhysicsManager : MonoBehaviour {
     {
         if (PlayPauseKey)
         {
-            if (paused)
+            if (GameManager.instance.paused)
             {
-                if (started)
+                if (GameManager.instance.started)
                     UnpausePhysics();
                 else
                     Unpause();
             }
 
-            else if (!paused)
+            else if (!GameManager.instance.paused)
                 PausePhysics();
         }
 
@@ -47,15 +45,15 @@ public class PhysicsManager : MonoBehaviour {
 
     public void PlayPause()
     {
-        if (paused)
+        if (GameManager.instance.paused)
         {
-            if (started)
+            if (GameManager.instance.started)
                 UnpausePhysics();
             else
                 Unpause();
         }
 
-        else if (!paused)
+        else if (!GameManager.instance.paused)
             PausePhysics();
     }
 
@@ -78,7 +76,7 @@ public class PhysicsManager : MonoBehaviour {
     {
         UnpausePhysics();
         Pause();
-        started = false;
+        GameManager.instance.started = false;
 
         for (int i = 0; i < Props.Count; i++)
         {
@@ -92,7 +90,7 @@ public class PhysicsManager : MonoBehaviour {
     // Pauses movement of ball objs only (velocity not conserved)
     public void Pause()
     {
-        paused = true;
+        GameManager.instance.paused = true;
 
         foreach (Transform ball in Balls)
         {
@@ -102,10 +100,10 @@ public class PhysicsManager : MonoBehaviour {
     }
 
     // Unpauses movement of ball objs
-    void Unpause()
+    public void Unpause()
     {
-        started = true;
-        paused = false;
+        GameManager.instance.started = true;
+        GameManager.instance.paused = false;
 
         foreach (Transform ball in Balls)
         {
@@ -115,16 +113,16 @@ public class PhysicsManager : MonoBehaviour {
     }
 
     // Stops all physics (velocity is conserved)
-    void PausePhysics()
+    public void PausePhysics()
     {
-        paused = true;
+        GameManager.instance.paused = true;
         Time.timeScale = 0f;
     }
 
     // Resumes physics
-    void UnpausePhysics()
+    public void UnpausePhysics()
     {
-        paused = false;
+        GameManager.instance.paused = false;
         Time.timeScale = 1f;
     }
 }

@@ -25,7 +25,7 @@ public class PhysicsController : MonoBehaviour {
     {
         var Controller = SteamVR_Controller.Input((int)trackedObj.index);
 
-        if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+        if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
         {
             var axis = Controller.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad);
 
@@ -41,7 +41,7 @@ public class PhysicsController : MonoBehaviour {
     {
         var Controller = SteamVR_Controller.Input((int)trackedObj.index);
 
-        if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+        if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
         {
             var axis = Controller.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad);
 
