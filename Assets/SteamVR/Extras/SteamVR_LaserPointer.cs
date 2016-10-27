@@ -26,6 +26,11 @@ public class SteamVR_LaserPointer : MonoBehaviour
     public event PointerEventHandler PointerIn;
     public event PointerEventHandler PointerOut;
 
+    //////////////////////////////////////////
+    public Vector3 hitPosition;
+    public bool hitFloor = false;
+    //////////////////////////////////////////
+
     Transform previousContact = null;
 
 	// Use this for initialization
@@ -91,7 +96,19 @@ public class SteamVR_LaserPointer : MonoBehaviour
         RaycastHit hit;
         bool bHit = Physics.Raycast(raycast, out hit);
 
-        if(previousContact && previousContact != hit.transform)
+        //////////////////////////////////////
+        if (bHit)
+        {
+            hitPosition = hit.point;
+
+            if (hit.transform.tag == "floor")
+                hitFloor = true;
+            else
+                hitFloor = false;
+        }
+        //////////////////////////////////////
+
+        if (previousContact && previousContact != hit.transform)
         {
             PointerEventArgs args = new PointerEventArgs();
             if (controller != null)
