@@ -7,9 +7,9 @@ public class PhysicsManager : MonoBehaviour {
     public Transform PropsParent;
     public List<Transform> Balls;
     private Vector3 originalPos;
-    private List<GameObject> Props = new List<GameObject>();
-    private List<Vector3> Positions = new List<Vector3>();
-    private List<Quaternion> Rotations = new List<Quaternion>();
+    private List<GameObject> Props;
+    private List<Vector3> Positions;
+    private List<Quaternion> Rotations;
 
     void Start()
     {
@@ -19,42 +19,37 @@ public class PhysicsManager : MonoBehaviour {
 
     void Update()
     {
-
         DetectKeys(Input.GetKeyDown(KeyCode.Space), Input.GetKeyDown(KeyCode.R));
     }
 
     public void DetectKeys(bool PlayPauseKey, bool ResetKey)
     {
-        if (PlayPauseKey)
+        if (!GameManager.instance.waiting)
         {
-            if (GameManager.instance.paused)
+            if (PlayPauseKey)
             {
-                if (GameManager.instance.started)
-                    UnpausePhysics();
-                else
-                    Unpause();
+                if (GameManager.instance.paused)
+                {
+                    if (GameManager.instance.started)
+                        UnpausePhysics();
+                    else
+                    {
+                        FreeRotations();
+                        GetOriginals();
+                        Unpause();
+                    }
+                }
+
+                else if (!GameManager.instance.paused)
+                    PausePhysics();
             }
 
-            else if (!GameManager.instance.paused)
-                PausePhysics();
+            if (ResetKey)
+            {
+                ResetProps();
+                FreezeRotations();
+            }
         }
-
-        if (ResetKey)
-            ResetProps();
-    }
-
-    public void PlayPause()
-    {
-        if (GameManager.instance.paused)
-        {
-            if (GameManager.instance.started)
-                UnpausePhysics();
-            else
-                Unpause();
-        }
-
-        else if (!GameManager.instance.paused)
-            PausePhysics();
     }
 
     public void Reset()
@@ -64,6 +59,11 @@ public class PhysicsManager : MonoBehaviour {
 
     void GetOriginals()
     {
+        Debug.Log("Getting originals");
+        Props = new List<GameObject>();
+        Positions = new List<Vector3>();
+        Rotations = new List<Quaternion>();
+
         foreach (Transform prop in PropsParent)
         {
             Props.Add(prop.gameObject);
@@ -124,5 +124,17 @@ public class PhysicsManager : MonoBehaviour {
     {
         GameManager.instance.paused = false;
         Time.timeScale = 1f;
+    }
+
+    public void FreezeRotations()
+    {
+        for (int i = 0; i < Props.Count; i++)
+            Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationZ;
+    }
+
+    public void FreeRotations()
+    {
+        for (int i = 0; i < Props.Count; i++)
+            Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 }

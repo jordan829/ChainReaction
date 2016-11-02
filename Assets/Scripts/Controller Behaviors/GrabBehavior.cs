@@ -3,10 +3,12 @@ using System.Collections;
 
 public class GrabBehavior : MonoBehaviour {
 
+    public GameObject RotController;
     private SteamVR_TrackedObject trackedObj;
     private PhysicsController physController;
-    private GameObject savedGO;
+    public GameObject savedGO;
     private Transform prevParent;
+    public bool grabbing = false;
 
     void Awake()
     {
@@ -25,12 +27,15 @@ public class GrabBehavior : MonoBehaviour {
         if (GameManager.instance.paused && !GameManager.instance.paused)
         {
             // Grab object
-            if (other.gameObject.tag == "movable" && Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
+            if (other.gameObject.tag.Contains("movable") && Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
             {
+                grabbing = true;
                 prevParent = other.transform.parent;
                 savedGO = other.gameObject;
                 savedGO.GetComponent<Rigidbody>().useGravity = false;
-                savedGO.transform.SetParent(transform);
+
+                if (!other.gameObject.tag.Contains("limitrot"))
+                    savedGO.transform.SetParent(transform);
             }
 
             // Release object
@@ -38,10 +43,24 @@ public class GrabBehavior : MonoBehaviour {
             {
                 if (savedGO != null)
                 {
+                    grabbing = false;
                     savedGO.GetComponent<Rigidbody>().useGravity = true;
-                    savedGO.transform.SetParent(prevParent);
+
+                    if (!other.gameObject.tag.Contains("limitrot"))
+                        savedGO.transform.SetParent(prevParent);
+
                     savedGO = null;
                 }
+            }
+
+            if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Grip) && savedGO != null && savedGO.tag.Contains("limitrot"))
+            {
+                RotController.SetActive(true);
+            }
+
+            else if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip) && savedGO != null && savedGO.tag.Contains("limitrot"))
+            {
+                RotController.SetActive(false);
             }
         }
     }

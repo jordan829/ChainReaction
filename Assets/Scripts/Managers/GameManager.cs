@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour{
     public bool levelComplete = false;
     public bool paused = true;
     public bool started = false;
+    public bool waiting = false;
     public float waitTime = 3f;
     private float pauseEndTime = 0f;
     public int currentLevel = 0;
@@ -41,11 +42,17 @@ public class GameManager : MonoBehaviour{
 
     public void NextLevel()
     {
+        waiting = true;
+
         Debug.Log("Waiting: " + (pauseEndTime - Time.realtimeSinceStartup));
 
         if (Time.realtimeSinceStartup >= pauseEndTime)
         {
-            physManager.Reset();
+            waiting = false;
+
+            //////////////////////////////
+            physManager.Reset(); // TODO: Go to next level or reset completely
+            //////////////////////////////
             levelComplete = false;
         }
     }
