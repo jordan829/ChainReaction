@@ -17,7 +17,7 @@ public class PhysicsController : MonoBehaviour {
 
         var Controller = SteamVR_Controller.Input((int)trackedObj.index);
 
-        GameManager.physManager.DetectKeys(DPadUp(), DPadDown());
+        GameManager.LevelMan.DetectKeys(DPadUp(), DPadDown());
 	}
 
     // Returns true if up is pressed on controller D-Pad

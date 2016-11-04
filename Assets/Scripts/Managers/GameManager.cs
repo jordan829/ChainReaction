@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour{
 
     public static GameManager instance;
-    public static PhysicsManager physManager;
+    public static LevelManager LevelMan;
 
     public List<Level> Levels;
 
@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour{
 
         Levels[currentLevel].Props.SetActive(true);
 
-        physManager = GetComponent<PhysicsManager>();
+        LevelMan = GetComponent<LevelManager>();
     }
 
     void Update()
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour{
     public void LevelComplete()
     {
         Debug.Log("LEVEL COMPLETE");
-        physManager.PausePhysics();
+        LevelMan.PausePhysics();
         levelComplete = true;
         pauseEndTime = Time.realtimeSinceStartup + waitTime;
        
@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour{
             waiting = false;
 
             // Reset current level props and set inactive before loading next level
-            physManager.Reset();
+            LevelMan.Reset();
             Levels[currentLevel].Props.SetActive(false);
 
             // Increment level counter and load next set of props
@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour{
             Levels[currentLevel].Props.SetActive(true);
 
             // Tell physManager a new level has been loaded so new obj originals can be stored
-            physManager.LoadNewLevel(); 
+            LevelMan.LoadNewLevel(); 
 
             levelComplete = false;
         }
