@@ -4,14 +4,19 @@ using System.Collections.Generic;
 
 public class PhysicsManager : MonoBehaviour {
 
-    public Transform PropsParent;
-    public List<Transform> Balls;
+    //public Transform PropsParent;
+    //public List<Transform> Balls;
     private Vector3 originalPos;
     private List<GameObject> Props;
     private List<Vector3> Positions;
     private List<Quaternion> Rotations;
 
     void Start()
+    {
+        LoadNewLevel();
+    }
+
+    public void LoadNewLevel()
     {
         Pause();
         GetOriginals();
@@ -64,7 +69,7 @@ public class PhysicsManager : MonoBehaviour {
         Positions = new List<Vector3>();
         Rotations = new List<Quaternion>();
 
-        foreach (Transform prop in PropsParent)
+        foreach (Transform prop in GameManager.instance.Levels[GameManager.instance.currentLevel].Props.transform)
         {
             Props.Add(prop.gameObject);
             Positions.Add(prop.position);
@@ -80,10 +85,13 @@ public class PhysicsManager : MonoBehaviour {
 
         for (int i = 0; i < Props.Count; i++)
         {
-            Props[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
-            Props[i].GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            Props[i].transform.position = Positions[i];
-            Props[i].transform.rotation = Rotations[i];
+            if (Props[i].GetComponent<Rigidbody>())
+            {
+                Props[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
+                Props[i].GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                Props[i].transform.position = Positions[i];
+                Props[i].transform.rotation = Rotations[i];
+            }
         }
     }
 
@@ -92,10 +100,10 @@ public class PhysicsManager : MonoBehaviour {
     {
         GameManager.instance.paused = true;
 
-        foreach (Transform ball in Balls)
+        foreach (GameObject ball in GameManager.instance.Levels[GameManager.instance.currentLevel].Balls)
         {
-            ball.gameObject.GetComponent<Rigidbody>().useGravity = false;
-            ball.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            ball.GetComponent<Rigidbody>().useGravity = false;
+            ball.GetComponent<Rigidbody>().isKinematic = true;
         }
     }
 
@@ -105,10 +113,10 @@ public class PhysicsManager : MonoBehaviour {
         GameManager.instance.started = true;
         GameManager.instance.paused = false;
 
-        foreach (Transform ball in Balls)
+        foreach (GameObject ball in GameManager.instance.Levels[GameManager.instance.currentLevel].Balls)
         {
-            ball.gameObject.GetComponent<Rigidbody>().useGravity = true;
-            ball.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            ball.GetComponent<Rigidbody>().useGravity = true;
+            ball.GetComponent<Rigidbody>().isKinematic = false;
         }
     }
 
@@ -129,12 +137,14 @@ public class PhysicsManager : MonoBehaviour {
     public void FreezeRotations()
     {
         for (int i = 0; i < Props.Count; i++)
-            Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationZ;
+            if (Props[i].GetComponent<Rigidbody>())
+                Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationZ;
     }
 
     public void FreeRotations()
     {
         for (int i = 0; i < Props.Count; i++)
-            Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            if (Props[i].GetComponent<Rigidbody>())
+                Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 }
