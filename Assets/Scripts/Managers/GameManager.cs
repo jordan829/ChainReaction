@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour{
 
     void Update()
     {
-        if (levelComplete)
+        if (levelComplete || Input.GetKeyDown(KeyCode.N))
             NextLevel();
     }
 
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour{
 
         Debug.Log("Waiting: " + (pauseEndTime - Time.realtimeSinceStartup));
 
-        if (Time.realtimeSinceStartup >= pauseEndTime)
+        if (Time.realtimeSinceStartup >= pauseEndTime && Levels.Capacity > (currentLevel + 1))
         {
             waiting = false;
 

@@ -16,7 +16,7 @@ public class GrabBehavior : MonoBehaviour {
         trackedObj = GetComponent<SteamVR_TrackedObject>();
 
         // Get reference to physics controller
-        physController = GameObject.FindObjectOfType<PhysicsController>();
+        physController = FindObjectOfType<PhysicsController>();
     }
 
     void OnTriggerStay(Collider other)

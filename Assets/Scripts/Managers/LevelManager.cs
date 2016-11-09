@@ -85,6 +85,7 @@ public class LevelManager : MonoBehaviour {
         {
             if (Props[i].GetComponent<Rigidbody>())
             {
+                Props[i].gameObject.SetActive(true);
                 Props[i].GetComponent<Rigidbody>().velocity = Vector3.zero;
                 Props[i].GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
                 Props[i].transform.position = Positions[i];
