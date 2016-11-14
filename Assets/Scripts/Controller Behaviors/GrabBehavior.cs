@@ -3,7 +3,6 @@ using System.Collections;
 
 public class GrabBehavior : MonoBehaviour {
 
-    public GameObject RotController;
     private SteamVR_TrackedObject trackedObj;
     private PhysicsController physController;
     public GameObject savedGO;
@@ -24,43 +23,32 @@ public class GrabBehavior : MonoBehaviour {
         var Controller = SteamVR_Controller.Input((int)trackedObj.index);
 
         // Make sure physics are not already initiated (player cannot move objects while paused in the middle of a simulation)
-        if (GameManager.instance.paused && !GameManager.instance.paused)
+        if (GameManager.instance.paused && !GameManager.instance.started)
         {
             // Grab object
-            if (other.gameObject.tag.Contains("movable") && Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
+            if (other.gameObject.tag.Contains("movable") && Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger) && !grabbing) //&& savedGO == null)
             {
+                Debug.Log("Grabbing");
                 grabbing = true;
-                prevParent = other.transform.parent;
-                savedGO = other.gameObject;
-                savedGO.GetComponent<Rigidbody>().useGravity = false;
+                other.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                GetComponent<FixedJoint>().connectedBody = other.gameObject.GetComponent<Rigidbody>();
 
-                if (!other.gameObject.tag.Contains("limitrot"))
-                    savedGO.transform.SetParent(transform);
+                //prevParent = other.transform.parent;
+                //savedGO = other.gameObject;
+                //savedGO.GetComponent<Rigidbody>().useGravity = false;
+                //savedGO.transform.SetParent(transform);
             }
 
             // Release object
-            else if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Trigger) && savedGO != null)
+            else if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Trigger) && grabbing) //&& savedGO != null)
             {
-                if (savedGO != null)
-                {
-                    grabbing = false;
-                    savedGO.GetComponent<Rigidbody>().useGravity = true;
+                grabbing = false;
+                GetComponent<FixedJoint>().connectedBody = null;
+                other.gameObject.GetComponent<Rigidbody>().useGravity = true;
 
-                    if (!other.gameObject.tag.Contains("limitrot"))
-                        savedGO.transform.SetParent(prevParent);
-
-                    savedGO = null;
-                }
-            }
-
-            if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Grip) && savedGO != null && savedGO.tag.Contains("limitrot"))
-            {
-                RotController.SetActive(true);
-            }
-
-            else if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip) && savedGO != null && savedGO.tag.Contains("limitrot"))
-            {
-                RotController.SetActive(false);
+                //savedGO.GetComponent<Rigidbody>().useGravity = true;
+                //savedGO.transform.SetParent(prevParent);
+                //savedGO = null;
             }
         }
     }

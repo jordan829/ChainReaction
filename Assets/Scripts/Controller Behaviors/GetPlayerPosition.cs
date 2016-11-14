@@ -7,7 +7,7 @@ public class GetPlayerPosition : MonoBehaviour {
 
     void Awake()
     {
-        PlayerPosition = GameObject.Find("Camera (head)").transform;
+        PlayerPosition = GameObject.Find("Camera (eye)").transform;
     }
 
     void Update()

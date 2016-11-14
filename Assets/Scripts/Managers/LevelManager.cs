@@ -18,6 +18,7 @@ public class LevelManager : MonoBehaviour {
     {
         Pause();
         GetOriginals();
+        FreezeRotations();
     }
 
     void Update()
@@ -50,7 +51,6 @@ public class LevelManager : MonoBehaviour {
             if (ResetKey)
             {
                 ResetProps();
-                FreezeRotations();
             }
         }
     }
@@ -92,6 +92,8 @@ public class LevelManager : MonoBehaviour {
                 Props[i].transform.rotation = Rotations[i];
             }
         }
+
+        FreezeRotations();
     }
 
     // Pauses movement of ball objs only (velocity not conserved)
@@ -135,13 +137,17 @@ public class LevelManager : MonoBehaviour {
 
     public void FreezeRotations()
     {
+        Debug.Log("Freeze rotations");
         for (int i = 0; i < Props.Count; i++)
-            if (Props[i].GetComponent<Rigidbody>())
-                Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationZ;
+            if (Props[i].GetComponent<Rigidbody>() && (Props[i].name.Contains("Book") || Props[i].name.Contains("Race")))
+            {
+                Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
     }
 
     public void FreeRotations()
     {
+        Debug.Log("Free rotations");
         for (int i = 0; i < Props.Count; i++)
             if (Props[i].GetComponent<Rigidbody>())
                 Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;

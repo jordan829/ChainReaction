@@ -50,7 +50,7 @@ namespace VRTK
         public event ObjectInteractEventHandler ControllerUngrabInteractableObject;
 
         private Joint controllerAttachJoint;
-        private GameObject grabbedObject = null;
+        public GameObject grabbedObject = null;
         private bool updatedHideControllerOnGrab = false;
         private VRTK_InteractTouch interactTouch;
         private VRTK_ControllerActions controllerActions;
