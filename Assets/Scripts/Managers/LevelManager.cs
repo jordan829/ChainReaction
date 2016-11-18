@@ -60,7 +60,7 @@ public class LevelManager : MonoBehaviour {
         ResetProps();
     }
 
-    void GetOriginals()
+    public void GetOriginals()
     {
         Debug.Log("Getting originals");
         Props = new List<GameObject>();
@@ -139,17 +139,26 @@ public class LevelManager : MonoBehaviour {
     {
         Debug.Log("Freeze rotations");
         for (int i = 0; i < Props.Count; i++)
+        {
             if (Props[i].GetComponent<Rigidbody>() && (Props[i].name.Contains("Book") || Props[i].name.Contains("Race")))
-            {
                 Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            }
+
+            if (Props[i].gameObject.name.Contains("Balloon"))
+                Props[i].GetComponent<Rigidbody>().isKinematic = true;
+        }
     }
 
     public void FreeRotations()
     {
         Debug.Log("Free rotations");
         for (int i = 0; i < Props.Count; i++)
+        {
             if (Props[i].GetComponent<Rigidbody>())
                 Props[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+
+            if (Props[i].gameObject.name.Contains("Balloon"))
+                Props[i].GetComponent<Rigidbody>().isKinematic = false;
+        }
     }
 }
+
