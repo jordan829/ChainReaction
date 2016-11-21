@@ -16,9 +16,12 @@ public class MenuManager : MonoBehaviour {
         var Controller = SteamVR_Controller.Input((int)trackedObj.index);
 
         if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
-            Menu.SetActive(true);
+        {
+            if (Menu.activeInHierarchy)
+                Menu.SetActive(false);
 
-        if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
-            Menu.SetActive(false);
+            else
+                Menu.SetActive(true);
+        }
     }
 }

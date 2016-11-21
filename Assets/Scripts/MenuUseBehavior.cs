@@ -24,6 +24,5 @@ namespace VRTK
                     newProp.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
         }
-
     }
 }

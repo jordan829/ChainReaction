@@ -18,9 +18,7 @@ public class StarBehavior : MonoBehaviour {
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag.Contains("trigger"))
-        {
             gameObject.SetActive(false);
-        }
     }
 
     void BobAndRotate()

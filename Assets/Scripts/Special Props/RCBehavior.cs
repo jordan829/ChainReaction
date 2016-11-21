@@ -8,10 +8,12 @@ public class RCBehavior : MonoBehaviour {
     public float acceleration;
     public float maxSpeed;
     private float speed;
+    private LineRenderer line;
 
     void Start()
     {
         speed = acceleration;
+        line = GetComponent<LineRenderer>();
     }
 
 	void Update () {
@@ -25,6 +27,12 @@ public class RCBehavior : MonoBehaviour {
 
         if (hit && !halt)
             Accelerate();
+
+        if (GameManager.instance.started)
+            line.enabled = false;
+
+        else
+            line.enabled = true;
 	}
 
     void OnCollisionEnter(Collision other)
