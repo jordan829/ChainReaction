@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour{
 
     public static GameManager instance;
     public static LevelManager LevelMan;
+    
 
     public List<Level> Levels;
 
@@ -13,66 +14,66 @@ public class GameManager : MonoBehaviour{
     public class Level
     {
         public GameObject Props;
-        public GameObject[] Balls;
+        public List<GameObject> Balls;
     }
-    
-    public bool levelComplete = false;
+
+    public GameObject Menu;
+    private GameObject MenuInstance;
+    public GameObject MainMenu;
+    private GameObject MainMenuInstance;
+
+    public bool levelComplete = true;
     public bool paused = true;
     public bool started = false;
-    public bool waiting = false;
-    public float waitTime = 3f;
-    private float pauseEndTime = 0f;
-    public int currentLevel = 0;
+    //public bool waiting = false;
+    //public float waitTime = 3f;
+    //private float pauseEndTime = 0f;
+    public int currentLevel = -1;
+    public int starsAchieved = 0;
 
     void Awake()
     {
+        MainMenuInstance = GameObject.Instantiate(MainMenu);
+
         if (instance != null)
             Destroy(gameObject);
 
         else
             instance = this;
 
-        Levels[currentLevel].Props.SetActive(true);
-
         LevelMan = GetComponent<LevelManager>();
+        //LevelMan.LoadNewLevel();
     }
 
     void Update()
     {
-        if (levelComplete || Input.GetKeyDown(KeyCode.N))
+        if (Input.GetKeyDown(KeyCode.N))
             NextLevel();
     }
 
     public void LevelComplete()
     {
         Debug.Log("LEVEL COMPLETE");
-        LevelMan.PausePhysics();
         levelComplete = true;
-        pauseEndTime = Time.realtimeSinceStartup + waitTime;
-       
+        MenuInstance = GameObject.Instantiate(Menu);
     }
 
     public void NextLevel()
     {
-        waiting = true;
+        Destroy(MenuInstance);
+        Destroy(MainMenuInstance);
+        currentLevel++;
 
-        Debug.Log("Waiting: " + (pauseEndTime - Time.realtimeSinceStartup));
-
-        if (Time.realtimeSinceStartup >= pauseEndTime && Levels.Capacity > (currentLevel + 1))
+        if (currentLevel >= Levels.Capacity)
         {
-            waiting = false;
+            currentLevel = -1;
+            Destroy(LevelMan.curLevel);
+            MainMenuInstance = GameObject.Instantiate(MainMenu);
+        }
 
-            // Reset current level props and set inactive before loading next level
-            LevelMan.Reset();
-            Levels[currentLevel].Props.SetActive(false);
-
-            // Increment level counter and load next set of props
-            currentLevel++;
-            Levels[currentLevel].Props.SetActive(true);
-
-            // Tell physManager a new level has been loaded so new obj originals can be stored
-            LevelMan.LoadNewLevel(); 
-
+        else
+        {
+            LevelMan.LoadNewLevel();
             levelComplete = false;
         }
     }

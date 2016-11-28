@@ -8,6 +8,7 @@ public class GoalBehavior : MonoBehaviour {
         if (other.gameObject.tag.Contains("goal"))
         {
             GetComponent<Renderer>().material.color = Color.green;
+            other.gameObject.SetActive(false);
             GameManager.instance.LevelComplete();
         }
     }

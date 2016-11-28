@@ -8,17 +8,22 @@ public class LevelManager : MonoBehaviour {
     private List<GameObject> Props;
     private List<Vector3> Positions;
     private List<Quaternion> Rotations;
-
-    void Start()
-    {
-        LoadNewLevel();
-    }
+    public GameObject curLevel;
 
     public void LoadNewLevel()
     {
+        Debug.Log("meow");
+        Destroy(curLevel);
+
+        GameManager.instance.starsAchieved = 0;
+
+        curLevel = GameObject.Instantiate(GameManager.instance.Levels[GameManager.instance.currentLevel].Props);
+
+        FindBalls();
         Pause();
         GetOriginals();
         FreezeRotations();
+        Reset();
     }
 
     void Update()
@@ -28,35 +33,36 @@ public class LevelManager : MonoBehaviour {
 
     public void DetectKeys(bool PlayPauseKey, bool ResetKey)
     {
-        if (!GameManager.instance.waiting)
+        //if (!GameManager.instance.waiting)
+       // {
+        if (PlayPauseKey)
         {
-            if (PlayPauseKey)
+            if (GameManager.instance.paused)
             {
-                if (GameManager.instance.paused)
+                if (GameManager.instance.started)
+                    UnpausePhysics();
+                else
                 {
-                    if (GameManager.instance.started)
-                        UnpausePhysics();
-                    else
-                    {
-                        FreeRotations();
-                        GetOriginals();
-                        Unpause();
-                    }
+                    FreeRotations();
+                    GetOriginals();
+                    Unpause();
                 }
-
-                else if (!GameManager.instance.paused)
-                    PausePhysics();
             }
 
-            if (ResetKey)
-            {
-                ResetProps();
-            }
+            else if (!GameManager.instance.paused)
+                PausePhysics();
         }
+
+        if (ResetKey)
+        {
+            Reset();
+        }
+        //}
     }
 
     public void Reset()
     {
+        GameManager.instance.starsAchieved = 0;
         ResetProps();
     }
 
@@ -67,7 +73,7 @@ public class LevelManager : MonoBehaviour {
         Positions = new List<Vector3>();
         Rotations = new List<Quaternion>();
 
-        foreach (Transform prop in GameManager.instance.Levels[GameManager.instance.currentLevel].Props.transform)
+        foreach (Transform prop in curLevel.transform) //GameManager.instance.Levels[GameManager.instance.currentLevel].Props.transform)
         {
             Props.Add(prop.gameObject);
             Positions.Add(prop.position);
@@ -158,6 +164,17 @@ public class LevelManager : MonoBehaviour {
 
             if (Props[i].gameObject.name.Contains("Balloon"))
                 Props[i].GetComponent<Rigidbody>().isKinematic = false;
+        }
+    }
+
+    public void FindBalls()
+    {
+        GameManager.instance.Levels[GameManager.instance.currentLevel].Balls = new List<GameObject>();
+
+        foreach (Transform prop in curLevel.transform)
+        {
+            if (prop.name.Contains("Ball") && !prop.name.Contains("Balloon"))
+                GameManager.instance.Levels[GameManager.instance.currentLevel].Balls.Add(prop.gameObject);
         }
     }
 }

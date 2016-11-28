@@ -16,7 +16,8 @@ namespace VRTK
                 GameObject newProp = Instantiate(prefab);
                 newProp.name = prefab.name;
                 newProp.transform.position = transform.position;
-                newProp.transform.parent = GameManager.instance.Levels[GameManager.instance.currentLevel].Props.transform;
+                //newProp.transform.parent = GameManager.instance.Levels[GameManager.instance.currentLevel].Props.transform;
+                newProp.transform.parent = GameManager.LevelMan.curLevel.transform;
 
                 GameManager.LevelMan.GetOriginals();
 

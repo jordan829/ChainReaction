@@ -17,7 +17,7 @@ public class GrabManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (GameManager.instance.started)
+        if (GameManager.instance.started && !GameManager.instance.levelComplete)
         {
             grabScript.enabled = false;
             touchScript.enabled = false;
