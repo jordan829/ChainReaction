@@ -7,7 +7,6 @@ namespace VRTK
     {
         override public void StartUsing(GameObject currentUsingObject)
         {
-            Debug.Log("HELLLOOOOOO?????");
             if (GameManager.instance.levelComplete)
             {
                 GameManager.instance.NextLevel();

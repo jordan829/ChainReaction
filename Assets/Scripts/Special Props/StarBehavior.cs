@@ -17,20 +17,26 @@ public class StarBehavior : MonoBehaviour {
 	
     void OnTriggerEnter(Collider other)
     {
-        if (!GameManager.instance.started)
+        if (other.gameObject.tag.Contains("trigger"))
         {
-            if (other.gameObject.tag.Contains("prop"))
-                Destroy(other.gameObject);
+            GameManager.instance.starsAchieved++;
+            gameObject.SetActive(false);
         }
 
-        else
-        {
-            if (other.gameObject.tag.Contains("trigger"))
-            {
-                GameManager.instance.starsAchieved++;
-                gameObject.SetActive(false);
-            }
-        }
+        //if (!GameManager.instance.started)
+        //{
+        //    if (other.gameObject.name.Contains("Book") || other.gameObject.name.Contains("RaceC"))
+        //        Destroy(other.gameObject);
+        //}
+
+        //else
+        //{
+        //    if (other.gameObject.tag.Contains("trigger"))
+        //    {
+        //        GameManager.instance.starsAchieved++;
+        //        gameObject.SetActive(false);
+        //    }
+        //}
     }
 
     void BobAndRotate()
