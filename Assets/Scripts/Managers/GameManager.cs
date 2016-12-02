@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour{
 
     void Awake()
     {
+        currentLevel = -1;
+        starsAchieved = 0;
         MainMenuInstance = GameObject.Instantiate(MainMenu);
 
         if (instance != null)

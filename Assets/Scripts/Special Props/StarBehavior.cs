@@ -17,10 +17,19 @@ public class StarBehavior : MonoBehaviour {
 	
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Contains("trigger"))
+        if (!GameManager.instance.started)
         {
-            GameManager.instance.starsAchieved++;
-            gameObject.SetActive(false);
+            if (other.gameObject.tag.Contains("prop"))
+                Destroy(other.gameObject);
+        }
+
+        else
+        {
+            if (other.gameObject.tag.Contains("trigger"))
+            {
+                GameManager.instance.starsAchieved++;
+                gameObject.SetActive(false);
+            }
         }
     }
 
